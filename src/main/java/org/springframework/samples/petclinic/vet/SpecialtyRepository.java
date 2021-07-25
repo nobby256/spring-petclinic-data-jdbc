@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public interface SpecialtyRepository extends Repository<Specialty, Long> {
 
-    @Transactional(readOnly = true)
-    @Cacheable("specialty")
-    Specialty findById(Long id);
+	@Transactional(readOnly = true)
+	@Cacheable("specialty")
+	Specialty findById(Long id);
 }

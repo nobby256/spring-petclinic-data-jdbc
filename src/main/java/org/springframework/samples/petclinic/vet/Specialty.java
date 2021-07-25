@@ -26,31 +26,28 @@ import java.io.Serializable;
  * @author Maciej Walkowiak
  */
 public class Specialty implements Serializable {
-    @Id
-    private Long id;
-    private String name;
+	@Id
+	private Long id;
+	private String name;
 
-    Specialty(String name) {
-        this.name = name;
-    }
+	Specialty(String name) {
+		this.name = name;
+	}
 
-    Long getId() {
-        return id;
-    }
+	Long getId() {
+		return id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    void setId(Long id) {
-        this.id = id;
-    }
+	void setId(Long id) {
+		this.id = id;
+	}
 
-    @Override
-    public String toString() {
-        return "Specialty{" +
-               "id=" + id +
-               ", name='" + name + '\'' +
-               '}';
-    }
+	@Override
+	public String toString() {
+		return "Specialty{" + "id=" + id + ", name='" + name + '\'' + '}';
+	}
 }

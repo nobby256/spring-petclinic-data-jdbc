@@ -23,8 +23,10 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 /**
- * Repository class for <code>Visit</code> domain objects All method names are compliant with Spring Data naming
- * conventions so this interface can easily be extended for Spring Data See here: http://static.springsource.org/spring-data/jpa/docs/current/reference/html/jpa.repositories.html#jpa.query-methods.query-creation
+ * Repository class for <code>Visit</code> domain objects All method names are
+ * compliant with Spring Data naming conventions so this interface can easily be
+ * extended for Spring Data See here:
+ * http://static.springsource.org/spring-data/jpa/docs/current/reference/html/jpa.repositories.html#jpa.query-methods.query-creation
  *
  * @author Ken Krebs
  * @author Juergen Hoeller
@@ -33,13 +35,13 @@ import java.util.List;
  */
 public interface VisitRepository extends Repository<Visit, Integer> {
 
-    /**
-     * Save a <code>Visit</code> to the data store, either inserting or updating it.
-     *
-     * @param visit the <code>Visit</code> to save
-     */
-    void save(Visit visit) throws DataAccessException;
+	/**
+	 * Save a <code>Visit</code> to the data store, either inserting or updating it.
+	 *
+	 * @param visit the <code>Visit</code> to save
+	 */
+	void save(Visit visit) throws DataAccessException;
 
-    @Query("select * from visit where pet_id = :petId")
-    List<Visit> findByPetId(@Param("petId") Integer petId);
+	@Query("select * from visit where pet_id = :petId")
+	List<Visit> findByPetId(@Param("petId") Integer petId);
 }

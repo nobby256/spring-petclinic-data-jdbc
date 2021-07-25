@@ -31,63 +31,59 @@ import javax.validation.constraints.NotEmpty;
  */
 public class Visit {
 
-    @Id
-    private Long id;
+	@Id
+	private Long id;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate date;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private LocalDate date;
 
-    @NotEmpty
-    private String description;
+	@NotEmpty
+	private String description;
 
-    private Integer petId;
+	private Integer petId;
 
-    /**
-     * Creates a new instance of Visit for the current date
-     */
-    public Visit() {
-        this.date = LocalDate.now();
-    }
+	/**
+	 * Creates a new instance of Visit for the current date
+	 */
+	public Visit() {
+		this.date = LocalDate.now();
+	}
 
-    public LocalDate getDate() {
-        return this.date;
-    }
+	public LocalDate getDate() {
+		return this.date;
+	}
 
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
+	public void setDate(LocalDate date) {
+		this.date = date;
+	}
 
-    public String getDescription() {
-        return this.description;
-    }
+	public String getDescription() {
+		return this.description;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public Integer getPetId() {
-        return this.petId;
-    }
+	public Integer getPetId() {
+		return this.petId;
+	}
 
-    public void setPetId(Integer petId) {
-        this.petId = petId;
-    }
+	public void setPetId(Integer petId) {
+		this.petId = petId;
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public boolean isNew() {
-        return id == null;
-    }
+	public boolean isNew() {
+		return id == null;
+	}
 
-    @Override
-    public String toString() {
-        return "Visit{" +
-               "id=" + id +
-               ", date=" + date +
-               ", description='" + description + '\'' +
-               ", petId=" + petId +
-               '}';
-    }
+	@Override
+	public String toString() {
+		return "Visit{" + "id=" + id + ", date=" + date + ", description='" + description + '\'' + ", petId=" + petId
+				+ '}';
+	}
 }

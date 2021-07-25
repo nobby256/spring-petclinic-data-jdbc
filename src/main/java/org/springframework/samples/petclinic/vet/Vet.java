@@ -37,58 +37,58 @@ import javax.validation.constraints.NotEmpty;
  */
 public class Vet implements Serializable {
 
-    @Id
-    private Long id;
+	@Id
+	private Long id;
 
-    @NotEmpty
-    private String firstName;
+	@NotEmpty
+	private String firstName;
 
-    @NotEmpty
-    private String lastName;
+	@NotEmpty
+	private String lastName;
 
-    private Set<SpecialtyRef> specialties;
+	private Set<SpecialtyRef> specialties;
 
-    protected Set<SpecialtyRef> getSpecialtiesInternal() {
-        if (this.specialties == null) {
-            this.specialties = new HashSet<>();
-        }
-        return this.specialties;
-    }
+	protected Set<SpecialtyRef> getSpecialtiesInternal() {
+		if (this.specialties == null) {
+			this.specialties = new HashSet<>();
+		}
+		return this.specialties;
+	}
 
-    public List<SpecialtyRef> getSpecialties() {
-        List<SpecialtyRef> sortedSpecs = new ArrayList<>(getSpecialtiesInternal());
-        return Collections.unmodifiableList(sortedSpecs);
-    }
+	public List<SpecialtyRef> getSpecialties() {
+		List<SpecialtyRef> sortedSpecs = new ArrayList<>(getSpecialtiesInternal());
+		return Collections.unmodifiableList(sortedSpecs);
+	}
 
-    public int getNrOfSpecialties() {
-        return getSpecialtiesInternal().size();
-    }
+	public int getNrOfSpecialties() {
+		return getSpecialtiesInternal().size();
+	}
 
-    public void addSpecialty(Specialty specialty) {
-        getSpecialtiesInternal().add(new SpecialtyRef(specialty.getId()));
-    }
+	public void addSpecialty(Specialty specialty) {
+		getSpecialtiesInternal().add(new SpecialtyRef(specialty.getId()));
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public String getFirstName() {
-        return firstName;
-    }
+	public String getFirstName() {
+		return firstName;
+	}
 
-    public String getLastName() {
-        return lastName;
-    }
+	public String getLastName() {
+		return lastName;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
 }

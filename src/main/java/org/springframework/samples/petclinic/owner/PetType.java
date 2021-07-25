@@ -28,44 +28,43 @@ import java.util.Objects;
  */
 public class PetType {
 
-    @Id
-    private Long id;
+	@Id
+	private Long id;
 
-    private String name;
+	private String name;
 
-    PetType(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
+	PetType(Long id, String name) {
+		this.id = id;
+		this.name = name;
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        PetType petType = (PetType) o;
-        return Objects.equals(id, petType.id) &&
-               Objects.equals(name, petType.name);
-    }
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		PetType petType = (PetType) o;
+		return Objects.equals(id, petType.id) && Objects.equals(name, petType.name);
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
-    }
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, name);
+	}
 
-    @Override
-    public String toString() {
-        return name;
-    }
+	@Override
+	public String toString() {
+		return name;
+	}
 }

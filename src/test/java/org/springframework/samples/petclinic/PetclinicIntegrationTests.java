@@ -26,12 +26,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest
 public class PetclinicIntegrationTests {
 
-    @Autowired
-    private VetRepository vets;
+	@Autowired
+	private VetRepository vets;
 
-    @Test
-    public void testFindAll() throws Exception {
-        vets.findAll();
-        vets.findAll(); // served from cache
-    }
+	@Test
+	public void testFindAll() throws Exception {
+		vets.findAll();
+		vets.findAll(); // served from cache
+	}
 }

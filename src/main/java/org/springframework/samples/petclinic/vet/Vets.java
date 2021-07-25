@@ -19,20 +19,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Simple domain object representing a list of veterinarians. Mostly here to be used for the 'vets' {@link
- * org.springframework.web.servlet.view.xml.MarshallingView}.
+ * Simple domain object representing a list of veterinarians. Mostly here to be
+ * used for the 'vets'
+ * {@link org.springframework.web.servlet.view.xml.MarshallingView}.
  *
  * @author Arjen Poutsma
  */
 public class Vets {
 
-    private List<VetDto> vets;
+	private List<VetDto> vets;
 
-    public List<VetDto> getVetList() {
-        if (vets == null) {
-            vets = new ArrayList<>();
-        }
-        return vets;
-    }
+	public List<VetDto> getVetList() {
+		if (vets == null) {
+			vets = new ArrayList<>();
+		}
+		return vets;
+	}
 
 }

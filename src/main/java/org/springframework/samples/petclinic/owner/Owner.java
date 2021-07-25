@@ -31,86 +31,80 @@ import javax.validation.constraints.NotEmpty;
  */
 public class Owner {
 
-    @Id
-    private Integer id;
+	@Id
+	private Integer id;
 
-    @NotEmpty
-    private String firstName;
+	@NotEmpty
+	private String firstName;
 
-    @NotEmpty
-    private String lastName;
+	@NotEmpty
+	private String lastName;
 
-    @NotEmpty
-    private String address;
+	@NotEmpty
+	private String address;
 
-    @NotEmpty
-    private String city;
+	@NotEmpty
+	private String city;
 
-    @NotEmpty
-    @Digits(fraction = 0, integer = 10)
-    private String telephone;
+	@NotEmpty
+	@Digits(fraction = 0, integer = 10)
+	private String telephone;
 
-    public Integer getId() {
-        return id;
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public boolean isNew() {
-        return this.id == null;
-    }
+	public boolean isNew() {
+		return this.id == null;
+	}
 
-    public String getFirstName() {
-        return this.firstName;
-    }
+	public String getFirstName() {
+		return this.firstName;
+	}
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
 
-    public String getLastName() {
-        return this.lastName;
-    }
+	public String getLastName() {
+		return this.lastName;
+	}
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
 
-    public String getAddress() {
-        return this.address;
-    }
+	public String getAddress() {
+		return this.address;
+	}
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
+	public void setAddress(String address) {
+		this.address = address;
+	}
 
-    public String getCity() {
-        return this.city;
-    }
+	public String getCity() {
+		return this.city;
+	}
 
-    public void setCity(String city) {
-        this.city = city;
-    }
+	public void setCity(String city) {
+		this.city = city;
+	}
 
-    public String getTelephone() {
-        return this.telephone;
-    }
+	public String getTelephone() {
+		return this.telephone;
+	}
 
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
-    }
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
 
-    @Override
-    public String toString() {
-        return "Owner{" +
-               "id=" + id +
-               ", firstName='" + firstName + '\'' +
-               ", lastName='" + lastName + '\'' +
-               ", address='" + address + '\'' +
-               ", city='" + city + '\'' +
-               ", telephone='" + telephone + '\'' +
-               '}';
-    }
+	@Override
+	public String toString() {
+		return "Owner{" + "id=" + id + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\''
+				+ ", address='" + address + '\'' + ", city='" + city + '\'' + ", telephone='" + telephone + '\'' + '}';
+	}
 }
