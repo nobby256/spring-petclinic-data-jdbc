@@ -15,24 +15,29 @@
  */
 package org.springframework.samples.petclinic.owner;
 
-import org.springframework.samples.petclinic.visit.Visit;
-import org.springframework.samples.petclinic.visit.VisitRepository;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.ModelAndView;
-
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
+
+import org.springframework.samples.petclinic.customers.api.OwnerServiceApi;
+import org.springframework.samples.petclinic.customers.api.PetServiceApi;
+import org.springframework.samples.petclinic.customers.model.Owner;
+import org.springframework.samples.petclinic.customers.model.OwnerRequest;
+import org.springframework.samples.petclinic.visit.api.VisitServiceApi;
+import org.springframework.samples.petclinic.visit.model.Visit;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 /**
  * @author Juergen Hoeller
@@ -45,12 +50,12 @@ import javax.validation.Valid;
 class OwnerController {
 
 	private static final String VIEWS_OWNER_CREATE_OR_UPDATE_FORM = "owners/createOrUpdateOwnerForm";
-	private final OwnerRepository owners;
-	private final PetRepository pets;
-	private final VisitRepository visits;
+	private final OwnerServiceApi owners;
+	private final PetServiceApi pets;
+	private final VisitServiceApi visits;
 
-	public OwnerController(OwnerRepository clinicService, PetRepository pets, VisitRepository visits) {
-		this.owners = clinicService;
+	public OwnerController(OwnerServiceApi owners, PetServiceApi pets, VisitServiceApi visits) {
+		this.owners = owners;
 		this.pets = pets;
 		this.visits = visits;
 	}
@@ -61,30 +66,30 @@ class OwnerController {
 	}
 
 	@GetMapping("/owners/new")
-	public String initCreationForm(Map<String, Object> model) {
+	public String initCreationForm(ModelMap model) {
 		Owner owner = new Owner();
-		model.put("owner", owner);
+		model.addAttribute("owner", owner);
 		return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
 	}
 
 	@PostMapping("/owners/new")
-	public String processCreationForm(@Valid Owner owner, BindingResult result) {
+	public String processCreationForm(@Valid OwnerRequest ownerRequest, BindingResult result) {
 		if (result.hasErrors()) {
 			return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
 		} else {
-			this.owners.save(owner);
+			Owner owner = this.owners.createOwner(ownerRequest);
 			return "redirect:/owners/" + owner.getId();
 		}
 	}
 
 	@GetMapping("/owners/find")
-	public String initFindForm(Map<String, Object> model) {
+	public String initFindForm(ModelMap model) {
 		model.put("owner", new Owner());
 		return "owners/findOwners";
 	}
 
 	@GetMapping("/owners")
-	public String processFindForm(Owner owner, BindingResult result, Map<String, Object> model) {
+	public String processFindForm(@ModelAttribute Owner owner, BindingResult result, ModelMap model) {
 
 		// allow parameterless GET request for /owners to return all records
 		if (owner.getLastName() == null) {
@@ -92,15 +97,14 @@ class OwnerController {
 		}
 
 		// find owners by last name
-		Collection<OwnerDetails> results = this.owners.findByLastName(owner.getLastName()).stream()
-				.map(o -> new OwnerDetails(o, this.pets.findByOwnerId(o.getId()))).collect(Collectors.toList());
+		Collection<Owner> results = this.owners.findOwnerByLastName(owner.getLastName());
 		if (results.isEmpty()) {
 			// no owners found
 			result.rejectValue("lastName", "notFound", "not found");
 			return "owners/findOwners";
 		} else if (results.size() == 1) {
 			// 1 owner found
-			owner = results.iterator().next().getOwner();
+			owner = results.iterator().next();
 			return "redirect:/owners/" + owner.getId();
 		} else {
 			// multiple owners found
@@ -110,20 +114,19 @@ class OwnerController {
 	}
 
 	@GetMapping("/owners/{ownerId}/edit")
-	public String initUpdateOwnerForm(@PathVariable("ownerId") int ownerId, Model model) {
-		Owner owner = this.owners.findById(ownerId);
-		model.addAttribute(owner);
+	public String initUpdateOwnerForm(@PathVariable("ownerId") int ownerId, ModelMap model) {
+		Owner owner = this.owners.findOwnerByOwnerId(ownerId);
+		model.addAttribute("owner", owner);
 		return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
 	}
 
 	@PostMapping("/owners/{ownerId}/edit")
-	public String processUpdateOwnerForm(@Valid Owner owner, BindingResult result,
+	public String processUpdateOwnerForm(@Valid OwnerRequest ownerRequest, BindingResult result,
 			@PathVariable("ownerId") int ownerId) {
 		if (result.hasErrors()) {
 			return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
 		} else {
-			owner.setId(ownerId);
-			this.owners.save(owner);
+			this.owners.updateOwner(ownerRequest, ownerId);
 			return "redirect:/owners/{ownerId}";
 		}
 	}
@@ -135,55 +138,19 @@ class OwnerController {
 	 * @return a ModelMap with the model attributes for the view
 	 */
 	@GetMapping("/owners/{ownerId}")
-	public ModelAndView showOwner(@PathVariable("ownerId") int ownerId) {
-		ModelAndView mav = new ModelAndView("owners/ownerDetails");
-		mav.addObject(this.owners.findById(ownerId));
-		mav.addObject("pets", this.pets.findByOwnerId(ownerId).stream().map(
-				pet -> new PetDetails(pet, this.pets.findPetType(pet.getType()), this.visits.findByPetId(pet.getId())))
-				.collect(Collectors.toList()));
-		return mav;
-	}
+	public String showOwner(@PathVariable("ownerId") int ownerId, ModelMap model) {
+		Owner owner = owners.findOwnerByOwnerId(ownerId);
+		model.addAttribute("owner", owner);
 
-	static class OwnerDetails {
-		private final Owner owner;
-		private final List<Pet> pets;
+		Map<Integer, String> petTypeMap = new HashMap<>();
+		pets.getPetTypes().stream().forEach(petType -> petTypeMap.put(petType.getId(), petType.getName()));
+		model.addAttribute("petTypeMap", petTypeMap);
 
-		OwnerDetails(Owner owner, List<Pet> pets) {
-			this.owner = owner;
-			this.pets = pets;
-		}
+		List<Integer> petIds = owner.getPets().stream().map(pet -> pet.getId()).collect(Collectors.toList());
+		Map<Integer, List<Visit>> visitMap = petIds.isEmpty() ? new HashMap<>() : visits.findVisitByPetIds(petIds);
+		model.addAttribute("visitMap", visitMap);
 
-		public Owner getOwner() {
-			return owner;
-		}
-
-		public List<Pet> getPets() {
-			return pets;
-		}
-	}
-
-	static class PetDetails {
-		private final Pet pet;
-		private final PetType type;
-		private final List<Visit> visits;
-
-		PetDetails(Pet pet, PetType type, List<Visit> visits) {
-			this.pet = pet;
-			this.type = type;
-			this.visits = visits;
-		}
-
-		public Pet getPet() {
-			return pet;
-		}
-
-		public PetType getType() {
-			return type;
-		}
-
-		public List<Visit> getVisits() {
-			return visits;
-		}
+		return "owners/ownerDetails";
 	}
 
 }

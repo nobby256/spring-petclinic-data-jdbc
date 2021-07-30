@@ -16,23 +16,27 @@
 
 package org.springframework.samples.petclinic.service;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.samples.petclinic.owner.*;
-import org.springframework.samples.petclinic.vet.SpecialtyRef;
-import org.springframework.samples.petclinic.vet.Vet;
-import org.springframework.samples.petclinic.vet.VetRepository;
-import org.springframework.samples.petclinic.visit.Visit;
-import org.springframework.samples.petclinic.visit.VisitRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Collection;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.samples.petclinic.customers.model.Owner;
+import org.springframework.samples.petclinic.customers.model.Pet;
+import org.springframework.samples.petclinic.customers.model.PetType;
+import org.springframework.samples.petclinic.customers.web.OwnerRepository;
+import org.springframework.samples.petclinic.customers.web.PetRepository;
+import org.springframework.samples.petclinic.vet.model.SpecialtyRef;
+import org.springframework.samples.petclinic.vet.model.Vet;
+import org.springframework.samples.petclinic.vet.web.VetRepository;
+import org.springframework.samples.petclinic.visit.model.Visit;
+import org.springframework.samples.petclinic.visit.web.VisitRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Integration test of the Service and the Repository layer.
@@ -90,7 +94,7 @@ public class ClinicServiceTests {
 
 	@Test
 	public void shouldFindSingleOwner() {
-		Owner owner = this.owners.findById(1);
+		Owner owner = this.owners.findById(1).get();
 		assertThat(owner.getLastName()).startsWith("Franklin");
 	}
 
@@ -116,7 +120,7 @@ public class ClinicServiceTests {
 	@Test
 	@Transactional
 	public void shouldUpdateOwner() {
-		Owner owner = this.owners.findById(1);
+		Owner owner = this.owners.findById(1).get();
 		String oldLastName = owner.getLastName();
 		String newLastName = oldLastName + "X";
 
@@ -124,13 +128,13 @@ public class ClinicServiceTests {
 		this.owners.save(owner);
 
 		// retrieving new name from database
-		owner = this.owners.findById(1);
+		owner = this.owners.findById(1).get();
 		assertThat(owner.getLastName()).isEqualTo(newLastName);
 	}
 
 	@Test
 	public void shouldFindPetWithCorrectId() {
-		Pet pet7 = this.pets.findById(7);
+		Pet pet7 = this.pets.findById(7).get();
 		assertThat(pet7.getName()).startsWith("Samantha");
 	}
 
@@ -144,12 +148,12 @@ public class ClinicServiceTests {
 	@Test
 	@Transactional
 	public void shouldInsertPetIntoDatabaseAndGenerateId() {
-		Owner owner6 = this.owners.findById(6);
+		Owner owner6 = this.owners.findById(6).get();
 		int found = this.pets.findByOwnerId(6).size();
 
 		Pet pet = new Pet();
 		pet.setName("bowser");
-		pet.setType(2);
+		pet.setTypeId(2);
 		pet.setOwner(owner6);
 		this.pets.save(pet);
 		// checks that id has been generated
@@ -161,14 +165,14 @@ public class ClinicServiceTests {
 	@Test
 	@Transactional
 	public void shouldUpdatePetName() {
-		Pet pet7 = this.pets.findById(7);
+		Pet pet7 = this.pets.findById(7).get();
 		String oldName = pet7.getName();
 
 		String newName = oldName + "X";
 		pet7.setName(newName);
 		this.pets.save(pet7);
 
-		pet7 = this.pets.findById(7);
+		pet7 = this.pets.findById(7).get();
 		assertThat(pet7.getName()).isEqualTo(newName);
 	}
 
@@ -184,7 +188,7 @@ public class ClinicServiceTests {
 	@Test
 	@Transactional
 	public void shouldAddNewVisitForPet() {
-		Pet pet7 = this.pets.findById(7);
+		Pet pet7 = this.pets.findById(7).get();
 		int found = this.visits.findByPetId(pet7.getId()).size();
 
 		Visit visit = new Visit();

@@ -13,12 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.samples.petclinic.owner;
+package org.springframework.samples.petclinic.customers.model;
 
-import org.springframework.data.annotation.Id;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotEmpty;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.domain.Persistable;
+import org.springframework.data.relational.core.mapping.MappedCollection;
+
+import lombok.Data;
 
 /**
  * Simple JavaBean domain object representing an owner.
@@ -29,7 +36,8 @@ import javax.validation.constraints.NotEmpty;
  * @author Michael Isvy
  * @author Maciej Walkowiak
  */
-public class Owner {
+@Data
+public class Owner implements Persistable<Integer> {
 
 	@Id
 	private Integer id;
@@ -50,61 +58,12 @@ public class Owner {
 	@Digits(fraction = 0, integer = 10)
 	private String telephone;
 
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public boolean isNew() {
-		return this.id == null;
-	}
-
-	public String getFirstName() {
-		return this.firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return this.lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public String getAddress() {
-		return this.address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public String getCity() {
-		return this.city;
-	}
-
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-	public String getTelephone() {
-		return this.telephone;
-	}
-
-	public void setTelephone(String telephone) {
-		this.telephone = telephone;
-	}
+	@MappedCollection(idColumn = "owner_id", keyColumn = "id")
+	private List<Pet> pets = new ArrayList<>();
 
 	@Override
-	public String toString() {
-		return "Owner{" + "id=" + id + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\''
-				+ ", address='" + address + '\'' + ", city='" + city + '\'' + ", telephone='" + telephone + '\'' + '}';
+	public boolean isNew() {
+		return id == null;
 	}
+
 }

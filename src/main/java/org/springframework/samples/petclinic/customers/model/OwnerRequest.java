@@ -13,27 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.samples.petclinic.vet;
+package org.springframework.samples.petclinic.customers.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotEmpty;
 
-/**
- * Simple domain object representing a list of veterinarians. Mostly here to be
- * used for the 'vets'
- * {@link org.springframework.web.servlet.view.xml.MarshallingView}.
- *
- * @author Arjen Poutsma
- */
-public class Vets {
+import lombok.Data;
 
-	private List<VetDto> vets;
+@Data
+public class OwnerRequest {
 
-	public List<VetDto> getVetList() {
-		if (vets == null) {
-			vets = new ArrayList<>();
-		}
-		return vets;
-	}
+	@NotEmpty
+	private String firstName;
+
+	@NotEmpty
+	private String lastName;
+
+	@NotEmpty
+	private String address;
+
+	@NotEmpty
+	private String city;
+
+	@NotEmpty
+	@Digits(fraction = 0, integer = 10)
+	private String telephone;
 
 }

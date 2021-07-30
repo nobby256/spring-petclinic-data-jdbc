@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.samples.petclinic.visit;
+package org.springframework.samples.petclinic.visit.web;
+
+import java.util.List;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
-
-import java.util.List;
+import org.springframework.samples.petclinic.visit.model.Visit;
 
 /**
  * Repository class for <code>Visit</code> domain objects All method names are
@@ -44,4 +45,7 @@ public interface VisitRepository extends Repository<Visit, Integer> {
 
 	@Query("select * from visit where pet_id = :petId")
 	List<Visit> findByPetId(@Param("petId") Integer petId);
+
+	@Query("select * from visit where pet_id in (:petIds)")
+	List<Visit> findByPetIdIn(@Param("petIds") List<Integer> petIds);
 }

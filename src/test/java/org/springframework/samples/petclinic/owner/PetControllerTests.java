@@ -1,5 +1,9 @@
 package org.springframework.samples.petclinic.owner;
 
+import static org.mockito.BDDMockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,12 +12,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.samples.petclinic.customers.api.OwnerServiceApi;
+import org.springframework.samples.petclinic.customers.api.PetServiceApi;
+import org.springframework.samples.petclinic.customers.model.Owner;
+import org.springframework.samples.petclinic.customers.model.Pet;
+import org.springframework.samples.petclinic.customers.model.PetType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Test class for the {@link PetController}
@@ -30,17 +34,17 @@ public class PetControllerTests {
 	private MockMvc mockMvc;
 
 	@MockBean
-	private PetRepository pets;
+	private PetServiceApi pets;
 
 	@MockBean
-	private OwnerRepository owners;
+	private OwnerServiceApi owners;
 
 	@BeforeEach
 	public void setup() {
-		PetType cat = new PetType(3L, "hamster");
-		given(this.pets.findPetTypes()).willReturn(Lists.newArrayList(cat));
-		given(this.owners.findById(TEST_OWNER_ID)).willReturn(new Owner());
-		given(this.pets.findById(TEST_PET_ID)).willReturn(new Pet());
+		PetType cat = new PetType(3, "hamster");
+		given(this.pets.getPetTypes()).willReturn(Lists.newArrayList(cat));
+		given(this.owners.findOwnerByOwnerId(TEST_OWNER_ID)).willReturn(new Owner());
+		given(this.pets.findPetByPetId(TEST_PET_ID)).willReturn(new Pet());
 
 	}
 

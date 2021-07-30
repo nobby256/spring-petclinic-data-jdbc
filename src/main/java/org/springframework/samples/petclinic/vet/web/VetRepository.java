@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.samples.petclinic.owner;
+package org.springframework.samples.petclinic.vet.web;
 
+import java.util.List;
+
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.Repository;
-import org.springframework.data.repository.query.Param;
+import org.springframework.samples.petclinic.vet.model.Vet;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-
 /**
- * Repository class for <code>Owner</code> domain objects All method names are
+ * Repository class for <code>Vet</code> domain objects All method names are
  * compliant with Spring Data naming conventions so this interface can easily be
  * extended for Spring Data See here:
  * http://static.springsource.org/spring-data/jpa/docs/current/reference/html/jpa.repositories.html#jpa.query-methods.query-creation
@@ -32,36 +34,17 @@ import java.util.Collection;
  * @author Juergen Hoeller
  * @author Sam Brannen
  * @author Michael Isvy
- * @author Maciej Walkowiak
  */
-public interface OwnerRepository extends Repository<Owner, Integer> {
+public interface VetRepository extends Repository<Vet, Integer> {
 
 	/**
-	 * Retrieve {@link Owner}s from the data store by last name, returning all
-	 * owners whose last name <i>starts</i> with the given name.
-	 * 
-	 * @param lastName Value to search for
-	 * @return a Collection of matching {@link Owner}s (or an empty Collection if
-	 *         none found)
-	 */
-	@Query("SELECT * FROM owner WHERE last_name LIKE concat(:lastName,'%')")
-	@Transactional(readOnly = true)
-	Collection<Owner> findByLastName(@Param("lastName") String lastName);
-
-	/**
-	 * Retrieve an {@link Owner} from the data store by id.
-	 * 
-	 * @param id the id to search for
-	 * @return the {@link Owner} if found
+	 * Retrieve all <code>Vet</code>s from the data store.
+	 *
+	 * @return a <code>Collection</code> of <code>Vet</code>s
 	 */
 	@Transactional(readOnly = true)
-	Owner findById(@Param("id") Integer id);
-
-	/**
-	 * Save an {@link Owner} to the data store, either inserting or updating it.
-	 * 
-	 * @param owner the {@link Owner} to save
-	 */
-	void save(Owner owner);
+	@Cacheable("vets")
+	@Query("select * from vet order by id desc")
+	List<Vet> findAll() throws DataAccessException;
 
 }

@@ -39,15 +39,18 @@
 
   <table class="table table-striped">
 
-    <tr th:each="pet : ${pets}">
+    <tr th:each="pet : ${owner.pets}">
       <td valign="top">
         <dl class="dl-horizontal">
           <dt>Name</dt>
-          <dd th:text="${pet.pet.name}"></dd>
+          <dd th:text="${pet.name}"></dd>
           <dt>Birth Date</dt>
-          <dd th:text="${#temporals.format(pet.pet.birthDate, 'yyyy-MM-dd')}"></dd>
+<!--
+          <dd th:text="${#temporals.format(pet.birthDate, 'yyyy/MM/dd')}"></dd>
+-->
+          <dd th:text="${pet.birthDate}"></dd>
           <dt>Type</dt>
-          <dd th:text="${pet.type.name}"></dd>
+          <dd th:text="${petTypeMap.get(pet.typeId)}"></dd>
         </dl>
       </td>
       <td valign="top">
@@ -58,16 +61,16 @@
               <th>Description</th>
             </tr>
           </thead>
-          <tr th:each="visit : ${pet.visits}">
+          <tr th:each="visit : ${visitMap.get(pet.id)}">
             <td th:text="${#temporals.format(visit.date, 'yyyy-MM-dd')}"></td>
             <td th:text="${visit?.description}"></td>
           </tr>
           <tr>
             <td>
-              <a th:href="@{{ownerId}/pets/{petId}/edit(ownerId=${owner.id},petId=${pet.pet.id})}">Edit Pet</a>
+              <a th:href="@{{ownerId}/pets/{petId}/edit(ownerId=${owner.id},petId=${pet.id})}">Edit Pet</a>
             </td>
             <td>
-              <a th:href="@{{ownerId}/pets/{petId}/visits/new(ownerId=${owner.id},petId=${pet.pet.id})}">Add Visit</a>
+              <a th:href="@{{ownerId}/pets/{petId}/visits/new(ownerId=${owner.id},petId=${pet.id})}">Add Visit</a>
             </td>
           </tr>
         </table>

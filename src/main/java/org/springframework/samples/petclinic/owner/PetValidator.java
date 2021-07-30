@@ -15,6 +15,8 @@
  */
 package org.springframework.samples.petclinic.owner;
 
+import org.springframework.samples.petclinic.customers.model.Pet;
+import org.springframework.samples.petclinic.customers.model.PetRequest;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -43,7 +45,7 @@ public class PetValidator implements Validator {
 		}
 
 		// type validation
-		if (pet.isNew() && pet.getType() == null) {
+		if (pet.isNew() && pet.getTypeId() == null) {
 			errors.rejectValue("type", REQUIRED, REQUIRED);
 		}
 
@@ -58,7 +60,7 @@ public class PetValidator implements Validator {
 	 */
 	@Override
 	public boolean supports(Class<?> clazz) {
-		return Pet.class.isAssignableFrom(clazz);
+		return PetRequest.class.isAssignableFrom(clazz);
 	}
 
 }

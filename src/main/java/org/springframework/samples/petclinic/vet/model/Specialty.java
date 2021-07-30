@@ -13,11 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.samples.petclinic.vet;
+package org.springframework.samples.petclinic.vet.model;
+
+import java.io.Serializable;
 
 import org.springframework.data.annotation.Id;
 
-import java.io.Serializable;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * Models a {@link Vet Vet's} specialty (for example, dentistry).
@@ -25,29 +29,11 @@ import java.io.Serializable;
  * @author Juergen Hoeller
  * @author Maciej Walkowiak
  */
+@Data
+@EqualsAndHashCode
+@ToString
 public class Specialty implements Serializable {
 	@Id
-	private Long id;
+	private Integer id;
 	private String name;
-
-	Specialty(String name) {
-		this.name = name;
-	}
-
-	Long getId() {
-		return id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	void setId(Long id) {
-		this.id = id;
-	}
-
-	@Override
-	public String toString() {
-		return "Specialty{" + "id=" + id + ", name='" + name + '\'' + '}';
-	}
 }

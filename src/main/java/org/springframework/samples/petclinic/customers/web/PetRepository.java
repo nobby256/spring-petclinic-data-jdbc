@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2013 the original author or authors.
+ * Copyright 2012-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.samples.petclinic.owner;
+package org.springframework.samples.petclinic.customers.web;
+
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.samples.petclinic.customers.model.Pet;
+import org.springframework.samples.petclinic.customers.model.PetType;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 /**
  * Repository class for <code>Pet</code> domain objects All method names are
@@ -46,7 +49,7 @@ public interface PetRepository extends Repository<Pet, Integer> {
 	List<PetType> findPetTypes();
 
 	@Query("select * from pet_type where id = :typeId")
-	PetType findPetType(@Param("typeId") Integer id);
+	Optional<PetType> findPetType(@Param("typeId") Integer id);
 
 	/**
 	 * Retrieve a {@link Pet} from the data store by id.
@@ -55,14 +58,14 @@ public interface PetRepository extends Repository<Pet, Integer> {
 	 * @return the {@link Pet} if found
 	 */
 	@Transactional(readOnly = true)
-	Pet findById(Integer id);
+	Optional<Pet> findById(Integer id);
 
 	/**
 	 * Save a {@link Pet} to the data store, either inserting or updating it.
 	 * 
 	 * @param pet the {@link Pet} to save
 	 */
-	void save(Pet pet);
+	Pet save(Pet pet);
 
 	@Query("select * from pet where owner_id = :ownerId and name = :name")
 	List<Pet> findByOwnerIdAndName(@Param("ownerId") Integer ownerId, @Param("name") String name);

@@ -1,12 +1,8 @@
 package org.springframework.samples.petclinic.vet;
 
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.mockito.BDDMockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.samples.petclinic.vet.api.VetServiceApi;
+import org.springframework.samples.petclinic.vet.model.Specialty;
+import org.springframework.samples.petclinic.vet.model.Vet;
+import org.springframework.samples.petclinic.vet.web.SpecialtyRepository;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -28,7 +28,7 @@ public class VetControllerTests {
 	private MockMvc mockMvc;
 
 	@MockBean
-	private VetRepository vets;
+	private VetServiceApi vets;
 
 	@MockBean
 	private SpecialtyRepository specialties;
@@ -38,16 +38,16 @@ public class VetControllerTests {
 		Vet james = new Vet();
 		james.setFirstName("James");
 		james.setLastName("Carter");
-		james.setId(1L);
+		james.setId(1);
 		Vet helen = new Vet();
 		helen.setFirstName("Helen");
 		helen.setLastName("Leary");
-		helen.setId(2L);
+		helen.setId(2);
 		Specialty radiology = new Specialty("radiology");
-		radiology.setId(1L);
+		radiology.setId(1);
 		helen.addSpecialty(radiology);
-		given(this.vets.findAll()).willReturn(Lists.newArrayList(james, helen));
-		given(this.specialties.findById(1L)).willReturn(radiology);
+		given(this.vets.findAllVets()).willReturn(Lists.newArrayList(james, helen));
+		given(this.specialties.findById(1)).willReturn(radiology);
 	}
 
 	@Test

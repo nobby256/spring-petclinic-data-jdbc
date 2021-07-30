@@ -1,18 +1,18 @@
 package org.springframework.samples.petclinic.owner;
 
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.mockito.BDDMockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.samples.petclinic.visit.VisitRepository;
+import org.springframework.samples.petclinic.customers.api.OwnerServiceApi;
+import org.springframework.samples.petclinic.customers.api.PetServiceApi;
+import org.springframework.samples.petclinic.customers.model.Pet;
+import org.springframework.samples.petclinic.visit.api.VisitServiceApi;
 import org.springframework.test.web.servlet.MockMvc;
 
 /**
@@ -29,17 +29,17 @@ public class VisitControllerTests {
 	private MockMvc mockMvc;
 
 	@MockBean
-	private VisitRepository visits;
+	private VisitServiceApi visits;
 
 	@MockBean
-	private PetRepository pets;
+	private PetServiceApi pets;
 
 	@MockBean
-	private OwnerRepository owners;
+	private OwnerServiceApi owners;
 
 	@BeforeEach
 	public void init() {
-		given(this.pets.findById(TEST_PET_ID)).willReturn(new Pet());
+		given(this.pets.findPetByPetId(TEST_PET_ID)).willReturn(new Pet());
 	}
 
 	@Test

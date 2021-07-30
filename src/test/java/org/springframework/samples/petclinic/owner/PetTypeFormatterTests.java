@@ -1,5 +1,7 @@
 package org.springframework.samples.petclinic.owner;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,9 +14,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.springframework.samples.petclinic.customers.model.PetType;
+import org.springframework.samples.petclinic.customers.web.PetRepository;
 
 /**
  * Test class for {@link PetTypeFormatter}
@@ -36,7 +37,7 @@ public class PetTypeFormatterTests {
 
 	@Test
 	public void testPrint() {
-		PetType petType = new PetType(3L, "Hamster");
+		PetType petType = new PetType(3, "Hamster");
 		String petTypeName = this.petTypeFormatter.print(petType, Locale.ENGLISH);
 		assertThat(petTypeName).isEqualTo("Hamster");
 	}
@@ -62,8 +63,8 @@ public class PetTypeFormatterTests {
 	 */
 	private List<PetType> makePetTypes() {
 		List<PetType> petTypes = new ArrayList<>();
-		petTypes.add(new PetType(1L, "Dog"));
-		petTypes.add(new PetType(2L, "Bird"));
+		petTypes.add(new PetType(1, "Dog"));
+		petTypes.add(new PetType(2, "Bird"));
 		return petTypes;
 	}
 
