@@ -15,10 +15,12 @@
  */
 package org.springframework.samples.petclinic.owner;
 
+import java.time.LocalDate;
 import java.util.Collection;
 
 import javax.validation.Valid;
 
+import org.springframework.core.convert.ConversionService;
 import org.springframework.samples.petclinic.customers.api.OwnerServiceApi;
 import org.springframework.samples.petclinic.customers.api.PetServiceApi;
 import org.springframework.samples.petclinic.customers.model.Owner;
@@ -26,11 +28,8 @@ import org.springframework.samples.petclinic.customers.model.Pet;
 import org.springframework.samples.petclinic.customers.model.PetRequest;
 import org.springframework.samples.petclinic.customers.model.PetType;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,82 +46,82 @@ import org.springframework.web.bind.annotation.RequestMapping;
 class PetController {
 
 	private static final String VIEWS_PETS_CREATE_OR_UPDATE_FORM = "pets/createOrUpdatePetForm";
+
 	private final PetServiceApi pets;
 	private final OwnerServiceApi owners;
+	private final ConversionService convertionService;
 
-	public PetController(PetServiceApi pets, OwnerServiceApi owners) {
+	public PetController(PetServiceApi pets, OwnerServiceApi owners, ConversionService convertionService) {
 		this.pets = pets;
 		this.owners = owners;
+		this.convertionService = convertionService;
 	}
 
 	@ModelAttribute("types")
 	public Collection<PetType> populatePetTypes() {
-		return this.pets.getPetTypes();
+		return pets.getPetTypes();
 	}
 
 	@ModelAttribute("owner")
 	public Owner findOwner(@PathVariable("ownerId") int ownerId) {
-		return this.owners.findOwnerByOwnerId(ownerId);
-	}
-
-	@InitBinder("owner")
-	public void initOwnerBinder(WebDataBinder dataBinder) {
-		dataBinder.setDisallowedFields("id");
-	}
-
-	@InitBinder("pet")
-	public void initPetBinder(WebDataBinder dataBinder) {
-		dataBinder.setValidator(new PetValidator());
+		return owners.findOwnerByOwnerId(ownerId);
 	}
 
 	@GetMapping("/pets/new")
-	public String initCreationForm(Owner owner, ModelMap model) {
-		PetRequest petRequest = new PetRequest();
-		petRequest.setNew(true);
-		model.put("pet", petRequest);
+	public String initCreationForm(@ModelAttribute(binding = false) PetForm form) {
+		copy(new Pet(), form);
 		return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
 	}
 
 	@PostMapping("/pets/new")
-	public String processCreationForm(@PathVariable("ownerId") int ownerId, @Valid PetRequest petRequest,
-			BindingResult result, ModelMap model) {
-		if (!pets.findPetByOwnerIdAndPetName(ownerId, petRequest.getName()).isEmpty()) {
+	public String processCreationForm(@Valid PetForm form, @PathVariable("ownerId") int ownerId, BindingResult result) {
+		if (result.hasErrors()) {
+			return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
+		}
+		if (!pets.findPetByOwnerIdAndPetName(ownerId, form.getName()).isEmpty()) {
 			result.rejectValue("name", "duplicate", "already exists");
 		}
-		if (result.hasErrors()) {
-			model.put("pet", petRequest);
-			return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
-		} else {
-			this.pets.createPet(petRequest, ownerId);
-			return "redirect:/owners/{ownerId}";
-		}
+
+		PetRequest request = new PetRequest();
+		copy(form, request);
+		pets.createPet(request, ownerId);
+
+		return "redirect:/owners/{ownerId}";
 	}
 
 	@GetMapping("/pets/{petId}/edit")
-	public String initUpdateForm(@PathVariable("ownerId") int ownerId, @PathVariable("petId") int petId,
-			ModelMap model) {
-		Owner owner = (Owner) model.getAttribute("owner");
+	public String initUpdateForm(@ModelAttribute(binding = false) PetForm form, Owner owner,
+			@PathVariable("petId") int petId) {
 		Pet pet = owner.getPets().stream().filter(p -> p.getId().equals(petId)).findFirst().get();
-
-		PetRequest petRequest = new PetRequest();
-		petRequest.setBirthDate(pet.getBirthDate());
-		petRequest.setName(pet.getName());
-		petRequest.setTypeId(pet.getTypeId());
-		model.put("pet", petRequest);
+		copy(pet, form);
 
 		return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
 	}
 
 	@PostMapping("/pets/{petId}/edit")
-	public String processUpdateForm(@PathVariable("ownerId") int ownerId, @PathVariable("petId") int petId,
-			@Valid PetRequest petRequest, BindingResult result, ModelMap model) {
+	public String processUpdateForm(@Valid PetForm form, BindingResult result, @PathVariable("ownerId") int ownerId,
+			@PathVariable("petId") int petId) {
 		if (result.hasErrors()) {
-			model.put("pet", petRequest);
 			return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
-		} else {
-			this.pets.updatePet(petRequest, ownerId, petId);
-			return "redirect:/owners/{ownerId}";
 		}
+
+		PetRequest request = new PetRequest();
+		copy(form, request);
+		pets.updatePet(request, ownerId, petId);
+
+		return "redirect:/owners/{ownerId}";
 	}
 
+	protected void copy(Pet pet, PetForm form) {
+		form.setCreate(pet.getId() == null ? true : false);
+		form.setBirthDate(convertionService.convert(pet.getBirthDate(), String.class));
+		form.setName(pet.getName());
+		form.setTypeId(pet.getTypeId());
+	}
+
+	protected void copy(PetForm form, PetRequest request) {
+		request.setBirthDate(convertionService.convert(form.getBirthDate(), LocalDate.class));
+		request.setName(form.getName());
+		request.setTypeId(form.getTypeId());
+	}
 }

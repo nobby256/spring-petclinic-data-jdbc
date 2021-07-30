@@ -13,34 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.samples.petclinic.customers.model;
-
-import java.util.ArrayList;
-import java.util.List;
+package org.springframework.samples.petclinic.owner;
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotEmpty;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.MappedCollection;
-
 import lombok.Data;
 
-/**
- * Simple JavaBean domain object representing an owner.
- *
- * @author Ken Krebs
- * @author Juergen Hoeller
- * @author Sam Brannen
- * @author Michael Isvy
- * @author Maciej Walkowiak
- */
 @Data
-public class Owner {
+public class OwnerForm {
 
-	@Id
-	private Integer id;
-
+	private boolean isCreate;
+	
 	@NotEmpty
 	private String firstName;
 
@@ -56,8 +40,5 @@ public class Owner {
 	@NotEmpty
 	@Digits(fraction = 0, integer = 10)
 	private String telephone;
-
-	@MappedCollection(idColumn = "owner_id", keyColumn = "id")
-	private List<Pet> pets = new ArrayList<>();
 
 }

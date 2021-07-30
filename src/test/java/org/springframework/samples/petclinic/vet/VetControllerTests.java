@@ -10,13 +10,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.samples.petclinic.vet.api.VetServiceApi;
 import org.springframework.samples.petclinic.vet.model.Specialty;
 import org.springframework.samples.petclinic.vet.model.Vet;
 import org.springframework.samples.petclinic.vet.web.SpecialtyRepository;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 
 /**
  * Test class for the {@link VetController}
@@ -51,17 +49,9 @@ public class VetControllerTests {
 	}
 
 	@Test
-	public void testShowVetListHtml() throws Exception {
-		mockMvc.perform(get("/vets.html")).andExpect(status().isOk()).andExpect(model().attributeExists("vets"))
+	public void testShowVetList() throws Exception {
+		mockMvc.perform(get("/vets")).andExpect(status().isOk()).andExpect(model().attributeExists("vets"))
 				.andExpect(view().name("vets/vetList"));
-	}
-
-	@Test
-	public void testShowResourcesVetList() throws Exception {
-		ResultActions actions = mockMvc.perform(get("/vets").accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk());
-		actions.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.vetList[0].id").value(1));
 	}
 
 }

@@ -15,23 +15,24 @@
  */
 package org.springframework.samples.petclinic.owner;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.springframework.core.convert.ConversionService;
 import org.springframework.samples.petclinic.customers.api.OwnerServiceApi;
 import org.springframework.samples.petclinic.customers.api.PetServiceApi;
 import org.springframework.samples.petclinic.customers.model.Owner;
 import org.springframework.samples.petclinic.customers.model.Pet;
 import org.springframework.samples.petclinic.visit.api.VisitServiceApi;
+import org.springframework.samples.petclinic.visit.model.Visit;
 import org.springframework.samples.petclinic.visit.model.VisitRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,16 +53,14 @@ class VisitController {
 	private final OwnerServiceApi owners;
 	private final PetServiceApi pets;
 	private final VisitServiceApi visits;
+	private final ConversionService convertionService;
 
-	public VisitController(OwnerServiceApi owners, PetServiceApi pets, VisitServiceApi visits) {
+	public VisitController(OwnerServiceApi owners, PetServiceApi pets, VisitServiceApi visits,
+			ConversionService convertionService) {
 		this.owners = owners;
 		this.pets = pets;
 		this.visits = visits;
-	}
-
-	@InitBinder
-	public void setAllowedFields(WebDataBinder dataBinder) {
-		dataBinder.setDisallowedFields("id");
+		this.convertionService = convertionService;
 	}
 
 	/**
@@ -85,25 +84,34 @@ class VisitController {
 	// Spring MVC calls method loadPetWithVisit(...) before initNewVisitForm is
 	// called
 	@GetMapping("/visits/new")
-	public String initNewVisitForm(@PathVariable("petId") Integer petId, Model model) {
-		VisitRequest visitRequest = new VisitRequest();
-		visitRequest.setNew(true);
-		model.addAttribute("visit", visitRequest);
+	public String initNewVisitForm(VisitForm form) {
+		copy(new Visit(), form);
 		return "pets/createOrUpdateVisitForm";
 	}
 
 	// Spring MVC calls method loadPetWithVisit(...) before processNewVisitForm is
 	// called
 	@PostMapping("/visits/new")
-	public String processNewVisitForm(@Valid VisitRequest visitRequest, BindingResult result,
-			@PathVariable("petId") int petId, Model model) {
+	public String processNewVisitForm(@Valid VisitForm form, BindingResult result, @PathVariable("petId") int petId) {
 		if (result.hasErrors()) {
-			model.addAttribute("visit", visitRequest);
 			return "pets/createOrUpdateVisitForm";
-		} else {
-			this.visits.createVisits(visitRequest, petId);
-			return "redirect:/owners/{ownerId}";
 		}
+
+		VisitRequest request = new VisitRequest();
+		copy(form, request);
+		visits.createVisits(request, petId);
+
+		return "redirect:/owners/{ownerId}";
 	}
 
+	protected void copy(Visit visit, VisitForm form) {
+		form.setCreate(visit.getId() == null ? true : false);
+		form.setDate(convertionService.convert(visit.getDate(), String.class));
+		form.setDescription(visit.getDescription());
+	}
+
+	protected void copy(VisitForm form, VisitRequest request) {
+		request.setDate(convertionService.convert(form.getDate(), LocalDate.class));
+		request.setDescription(form.getDescription());
+	}
 }

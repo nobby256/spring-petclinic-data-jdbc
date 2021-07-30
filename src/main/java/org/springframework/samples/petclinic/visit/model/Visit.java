@@ -21,6 +21,8 @@ import javax.validation.constraints.NotEmpty;
 
 import org.springframework.data.annotation.Id;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -38,7 +40,7 @@ public class Visit {
 	@Id
 	private Integer id;
 
-	//@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate date;
 
 	@NotEmpty

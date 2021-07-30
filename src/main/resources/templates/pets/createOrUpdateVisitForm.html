@@ -3,7 +3,7 @@
 <body>
 
   <h2>
-    <th:block th:if="${visit['new']}">New </th:block>
+    <th:block th:if="${visitForm.create}">New </th:block>
     Visit
   </h2>
 
@@ -25,7 +25,7 @@
     </tr>
   </table>
 
-  <form th:object="${visit}" class="form-horizontal" method="post">
+  <form th:object="${visitForm}" class="form-horizontal" method="post">
     <div class="form-group has-feedback">
       <input th:replace="~{fragments/inputField :: input ('Date', 'date', 'date')}" />
       <input th:replace="~{fragments/inputField :: input ('Description', 'description', 'text')}" />
@@ -33,6 +33,7 @@
 
     <div class="form-group">
       <div class="col-sm-offset-2 col-sm-10">
+        <input type="hidden" th:field="*{create}" />
         <button class="btn btn-default" type="submit">Add Visit</button>
       </div>
     </div>
@@ -45,9 +46,6 @@
       <th>Date</th>
       <th>Description</th>
     </tr>
-<!--
-    <tr th:if="${!visit['new']}" th:each="petVisit : ${petVisits}">
--->
     <tr th:each="petVisit : ${petVisits}">
       <td th:text="${#temporals.format(petVisit.date, 'yyyy/MM/dd')}"></td>
       <td th:text=" ${petVisit.description}"></td>

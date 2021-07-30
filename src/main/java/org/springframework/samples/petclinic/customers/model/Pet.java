@@ -18,7 +18,8 @@ package org.springframework.samples.petclinic.customers.model;
 import java.time.LocalDate;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.domain.Persistable;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -33,23 +34,18 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode
-public class Pet implements Persistable<Integer> {
+public class Pet {
 
 	@Id
 	private Integer id;
 
 	private String name;
 
-	//@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate birthDate;
 
 	private Integer typeId;
 
 	private Integer ownerId;
-
-	@Override
-	public boolean isNew() {
-		return id == null;
-	}
 
 }

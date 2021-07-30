@@ -2,8 +2,8 @@ package org.springframework.samples.petclinic.customers.model;
 
 import java.time.LocalDate;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -11,13 +11,12 @@ import lombok.Data;
 
 @Data
 public class PetRequest {
-
-	private boolean isNew;
 	
 	@JsonFormat(pattern = "yyyy-MM-dd")
+	@NotNull
 	private LocalDate birthDate;
 
-	@Size(min = 1)
+	@NotEmpty
 	private String name;
 
 	@NotNull
