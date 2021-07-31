@@ -74,7 +74,7 @@ class PetController {
 	}
 
 	@PostMapping("/pets/new")
-	public String processCreationForm(@Valid PetForm form, @PathVariable("ownerId") int ownerId, BindingResult result) {
+	public String processCreationForm(@Valid PetForm form, BindingResult result, @PathVariable("ownerId") int ownerId) {
 		if (result.hasErrors()) {
 			return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
 		}

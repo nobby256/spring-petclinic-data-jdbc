@@ -20,4 +20,8 @@ import lombok.ToString;
 @ToString
 public class SpecialtyRef implements Serializable {
 	private Integer specialty;
+
+	public SpecialtyRef(Integer specialty) {
+		this.specialty = specialty;
+	}
 }

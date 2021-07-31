@@ -44,8 +44,7 @@ public class VetControllerTests {
 		helen.setLastName("Leary");
 		helen.setId(2);
 
-		SpecialtyRef radiologyRef = new SpecialtyRef();
-		radiologyRef.setSpecialty(1);
+		SpecialtyRef radiologyRef = new SpecialtyRef(1);
 		helen.getSpecialtyRefs().add(radiologyRef);
 
 		Specialty radiology = new Specialty();

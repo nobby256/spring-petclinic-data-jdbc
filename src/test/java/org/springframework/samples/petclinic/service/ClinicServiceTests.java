@@ -150,14 +150,18 @@ public class ClinicServiceTests {
 	public void shouldInsertPetIntoDatabaseAndGenerateId() {
 		Owner owner6 = this.owners.findById(6).get();
 		int found = this.pets.findByOwnerId(6).size();
+		assertThat(owner6.getPets().size()).isEqualTo(found);
 
 		Pet pet = new Pet();
 		pet.setName("bowser");
 		pet.setTypeId(2);
-		pet.setOwner(owner6);
+		pet.setOwnerId(owner6.getId());
 		this.pets.save(pet);
 		// checks that id has been generated
 		assertThat(pet.getId()).isNotNull();
+
+		owner6 = this.owners.findById(6).get();
+		assertThat(owner6.getPets().size()).isEqualTo(found + 1);
 
 		assertThat(this.pets.findByOwnerId(6).size()).isEqualTo(found + 1);
 	}
@@ -181,8 +185,8 @@ public class ClinicServiceTests {
 		Vet vet = this.vets.findAll().get(3);
 
 		assertThat(vet.getLastName()).isEqualTo("Douglas");
-		assertThat(vet.getNrOfSpecialties()).isEqualTo(2);
-		assertThat(vet.getSpecialties()).containsExactlyInAnyOrder(new SpecialtyRef(3L), new SpecialtyRef(2L));
+		assertThat(vet.getSpecialtyRefs()).hasSize(2);
+		assertThat(vet.getSpecialtyRefs()).containsExactlyInAnyOrder(new SpecialtyRef(3), new SpecialtyRef(2));
 	}
 
 	@Test
