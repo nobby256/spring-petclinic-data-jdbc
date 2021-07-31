@@ -45,10 +45,7 @@
           <dt>Name</dt>
           <dd th:text="${pet.name}"></dd>
           <dt>Birth Date</dt>
-<!--
-          <dd th:text="${#temporals.format(pet.birthDate, 'yyyy/MM/dd')}"></dd>
--->
-          <dd th:text="${pet.birthDate}"></dd>
+          <dd th:text="${{pet.birthDate}}"></dd>
           <dt>Type</dt>
           <dd th:text="${petTypeMap.get(pet.typeId)}"></dd>
         </dl>
@@ -62,7 +59,7 @@
             </tr>
           </thead>
           <tr th:each="visit : ${visitMap.get(pet.id)}">
-            <td th:text="${#temporals.format(visit.date, 'yyyy-MM-dd')}"></td>
+            <td th:text="${{visit.date}}"></td>
             <td th:text="${visit?.description}"></td>
           </tr>
           <tr>

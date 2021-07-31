@@ -26,6 +26,10 @@ public class VetDetail extends Vet {
 
 	private List<Specialty> specialties;
 
+	public VetDetail() {
+
+	}
+
 	public VetDetail(Vet vet, List<Specialty> specialties) {
 		this.setId(vet.getId());
 		this.setFirstName(vet.getFirstName());

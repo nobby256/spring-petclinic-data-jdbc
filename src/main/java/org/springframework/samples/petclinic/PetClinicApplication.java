@@ -16,8 +16,13 @@
 
 package org.springframework.samples.petclinic;
 
+import java.time.format.DateTimeFormatter;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.format.FormatterRegistry;
+import org.springframework.format.datetime.standard.DateTimeFormatterRegistrar;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * PetClinic Spring Boot Application.
@@ -26,10 +31,18 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  */
 @SpringBootApplication
-public class PetClinicApplication  {
+public class PetClinicApplication implements WebMvcConfigurer {
 
 	public static void main(String[] args) {
 		SpringApplication.run(PetClinicApplication.class, args);
+	}
+
+	@Override
+	public void addFormatters(FormatterRegistry registry) {
+        DateTimeFormatterRegistrar registrar = new DateTimeFormatterRegistrar();
+        //DateFormatterRegistrar registrar = new DateFormatterRegistrar();
+        registrar.setDateFormatter(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        registrar.registerFormatters(registry);
 	}
 
 }

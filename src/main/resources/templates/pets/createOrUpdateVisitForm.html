@@ -19,7 +19,7 @@
     </thead>
     <tr>
       <td th:text="${pet.name}"></td>
-      <td th:text="${#temporals.format(pet.birthDate, 'yyyy/MM/dd')}"></td>
+      <td th:text="${{pet.birthDate}}"></td>
       <td th:text="${petTypeMap.get(pet.typeId)}"></td>
       <td th:text="${owner?.firstName + ' ' + owner?.lastName}"></td>
     </tr>
@@ -47,7 +47,7 @@
       <th>Description</th>
     </tr>
     <tr th:each="petVisit : ${petVisits}">
-      <td th:text="${#temporals.format(petVisit.date, 'yyyy/MM/dd')}"></td>
+      <td th:text="${{petVisit.date}}}"></td>
       <td th:text=" ${petVisit.description}"></td>
     </tr>
   </table>
