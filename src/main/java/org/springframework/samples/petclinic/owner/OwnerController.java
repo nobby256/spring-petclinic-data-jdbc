@@ -66,6 +66,9 @@ class OwnerController {
 
 	@GetMapping("/owners")
 	public String processFindForm(FindForm form, BindingResult result, Model model) {
+		if (form.getLastName() == null) {
+			form.setLastName("");
+		}
 		// find owners by last name
 		Collection<Owner> results = owners.findOwnerByLastName(form.getLastName());
 		if (results.isEmpty()) {
