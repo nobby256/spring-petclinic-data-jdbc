@@ -85,8 +85,14 @@ class VisitController {
 	// called
 	@GetMapping("/visits/new")
 	public String initNewVisitForm(VisitForm form) {
-		copy(new Visit(), form);
+		Visit visit = new Visit();
+		visit.setDate(getToday());
+		copy(visit, form);
 		return "pets/createOrUpdateVisitForm";
+	}
+	
+	protected LocalDate getToday() {
+		return LocalDate.now();
 	}
 
 	// Spring MVC calls method loadPetWithVisit(...) before processNewVisitForm is
